@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { loginWithGoogle } from "@/modules/auth/actions";
 import { useSession } from "@/modules/auth/useSession";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 
 export function LoginPage() {
   const navigate = useNavigate();
