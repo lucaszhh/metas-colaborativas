@@ -18,6 +18,7 @@ export function LoginPage() {
 
   return (
     <div className="h-screen flex items-center justify-center">
+      <h1 className="text-2xl font-bold">Dashboard</h1>
       <button
         onClick={handleLogin}
         className="px-6 py-3 rounded bg-black text-white"

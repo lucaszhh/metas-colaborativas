@@ -4,7 +4,11 @@ import { Plus } from "lucide-react";
 import { useState } from "react";
 import { ModalNewWorkspace } from "./ModalNewWorkspace";
 
-export const SidebarWorkspaces = () => {
+type SidebarWorkspacesProps = {
+  onSelectWorkspace?: () => void;
+};
+
+export const SidebarWorkspaces = ({ onSelectWorkspace }: SidebarWorkspacesProps) => {
   const {
     workspaces,
     workspaceId,
@@ -53,7 +57,10 @@ export const SidebarWorkspaces = () => {
                 key={workspace.id}
                 variant={workspace.id === workspaceId ? "default" : "outline"}
                 className="w-full justify-start"
-                onClick={() => setActiveWorkspaceId(workspace.id)}
+                onClick={() => {
+                  setActiveWorkspaceId(workspace.id);
+                  onSelectWorkspace?.();
+                }}
                 size="sm"
               >
                 {workspace.name}

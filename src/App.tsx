@@ -2,7 +2,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { Toaster } from "sileo";
 import { LoginPage } from "./views/LoginPage";
 import { ProtectedRoute } from "./routes/ProtectedRoute";
-import { AppLayout } from "./views/AppLayout";
+import { DashboardLayout } from "./views/DashboardLayout";
 import { Dashboard } from "@/modules/goals/pages/Dashboard";
 
 export default function App() {
@@ -16,7 +16,7 @@ export default function App() {
           path="/"
           element={
             <ProtectedRoute>
-              <AppLayout />
+              <DashboardLayout />
             </ProtectedRoute>
           }
         >
