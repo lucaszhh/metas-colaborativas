@@ -244,7 +244,7 @@ export function Dashboard() {
       <Separator />
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <Card className="max-h-min md:col-span-1">
+        <Card>
           <CardHeader>
             <CardTitle>Listas</CardTitle>
           </CardHeader>
