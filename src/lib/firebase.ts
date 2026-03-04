@@ -11,11 +11,6 @@ const firebaseConfig = {
   messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
 };
 
-console.log("firebaseConfig", {
-  ...firebaseConfig,
-  apiKey: firebaseConfig.apiKey ? "set" : "missing",
-});
-
 export const app = initializeApp(firebaseConfig);
 export const auth = getAuth(app);
 export const googleProvider = new GoogleAuthProvider();
