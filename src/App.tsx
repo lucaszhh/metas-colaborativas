@@ -3,7 +3,7 @@ import { Toaster } from "sileo";
 import { LoginPage } from "./views/LoginPage";
 import { ProtectedRoute } from "./routes/ProtectedRoute";
 import { AppLayout } from "./views/AppLayout";
-import { Dashboard } from "@/features/goals/pages/Dashboard";
+import { Dashboard } from "@/modules/goals/pages/Dashboard";
 
 export default function App() {
   return (

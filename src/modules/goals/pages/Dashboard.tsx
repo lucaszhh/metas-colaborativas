@@ -1,8 +1,8 @@
 import { useMemo, useState, useEffect } from "react";
 import { Loader2 } from "lucide-react";
-import { useActiveWorkspace } from "@/features/workspaces/hooks/useActiveWorkspace";
-import { useGoalLists } from "@/features/goals/hooks/useGoalLists";
-import { useGoalMutations } from "@/features/goals/hooks/useGoalMutations";
+import { useActiveWorkspace } from "@/modules/workspaces/hooks/useActiveWorkspace";
+import { useGoalLists } from "@/modules/goals/hooks/useGoalLists";
+import { useGoalMutations } from "@/modules/goals/hooks/useGoalMutations";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -17,11 +17,6 @@ export function Dashboard() {
     user,
     workspaceId,
     loading,
-    workspaces,
-    error: workspaceError,
-    setActiveWorkspaceId,
-    createAndSelectWorkspace,
-    creatingWorkspace,
   } = useActiveWorkspace();
 
   const {
@@ -56,7 +51,6 @@ export function Dashboard() {
 
   const [newListTitle, setNewListTitle] = useState("");
   const [newGoalTitle, setNewGoalTitle] = useState("");
-  const [newWorkspaceName, setNewWorkspaceName] = useState("");
 
   const [editingGoalId, setEditingGoalId] = useState<string | null>(null);
   const [editingTitle, setEditingTitle] = useState("");
@@ -93,13 +87,6 @@ export function Dashboard() {
       title,
     });
     setNewGoalTitle("");
-  };
-
-  const handleCreateWorkspace = async () => {
-    const name = newWorkspaceName.trim();
-    if (!name || creatingWorkspace) return;
-    await createAndSelectWorkspace(name);
-    setNewWorkspaceName("");
   };
 
   const handleToggleGoal = (goalId: string, status: "open" | "close") => {
@@ -252,61 +239,12 @@ export function Dashboard() {
     <div className="space-y-4">
       <div>
         <h1 className="text-2xl font-bold">Dashboard</h1>
-        <p className="text-sm text-muted-foreground">
-          Workspace activo: {workspaceId ?? "—"}
-        </p>
       </div>
-
-      {workspaceError && (
-        <ErrorBanner message="No se pudieron cargar tus workspaces." />
-      )}
 
       <Separator />
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <Card className="md:col-span-1">
-          <CardHeader>
-            <CardTitle>Workspaces</CardTitle>
-          </CardHeader>
-
-          <CardContent className="space-y-3">
-            <div className="flex gap-2">
-              <Input
-                placeholder="Nuevo workspace"
-                value={newWorkspaceName}
-                onChange={(e) => setNewWorkspaceName(e.target.value)}
-                disabled={creatingWorkspace}
-              />
-              <Button onClick={handleCreateWorkspace} disabled={creatingWorkspace}>
-                {creatingWorkspace && <Loader2 className="animate-spin" />}
-                {creatingWorkspace ? "Creando..." : "Crear"}
-              </Button>
-            </div>
-
-            <ScrollArea className="h-40 pr-2">
-              <div className="space-y-2">
-                {workspaces.map((w) => (
-                  <Button
-                    key={w.id}
-                    variant={w.id === workspaceId ? "default" : "outline"}
-                    className="w-full justify-start"
-                    onClick={() => setActiveWorkspaceId(w.id)}
-                  >
-                    {w.name}
-                  </Button>
-                ))}
-
-                {workspaces.length === 0 && (
-                  <div className="text-sm text-muted-foreground">
-                    Todavía no tenés workspaces. Creá el primero.
-                  </div>
-                )}
-              </div>
-            </ScrollArea>
-          </CardContent>
-        </Card>
-
-        <Card className="md:col-span-1">
+        <Card >
           <CardHeader>
             <CardTitle>Listas</CardTitle>
           </CardHeader>
@@ -314,7 +252,7 @@ export function Dashboard() {
           <CardContent className="space-y-3">
             <div className="flex gap-2">
               <Input
-                placeholder="Nueva lista (ej: Salud)"
+                placeholder="Nueva lista"
                 value={newListTitle}
                 onChange={(e) => setNewListTitle(e.target.value)}
                 disabled={!workspaceId || createList.isPending}
@@ -374,7 +312,7 @@ export function Dashboard() {
           <CardContent className="space-y-3">
             <div className="flex gap-2">
               <Input
-                placeholder="Nueva meta (ej: Entrenar 3x semana)"
+                placeholder="Nueva meta"
                 value={newGoalTitle}
                 onChange={(e) => setNewGoalTitle(e.target.value)}
                 disabled={!selectedListId || !workspaceId || createGoal.isPending}
@@ -471,20 +409,6 @@ function DashboardSkeleton() {
       <Separator />
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <Card className="md:col-span-1">
-          <CardHeader>
-            <CardTitle>Workspaces</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-3">
-            <Skeleton className="h-9" />
-            <div className="space-y-2">
-              <Skeleton className="h-9" />
-              <Skeleton className="h-9" />
-              <Skeleton className="h-9" />
-            </div>
-          </CardContent>
-        </Card>
-
         <Card className="md:col-span-1">
           <CardHeader>
             <CardTitle>Listas</CardTitle>

@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { loginWithGoogle } from "@/auth/actions";
-import { useSession } from "@/auth/useSession";
+import { loginWithGoogle } from "@/modules/auth/actions";
+import { useSession } from "@/modules/auth/useSession";
 
 export function LoginPage() {
   const navigate = useNavigate();

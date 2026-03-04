@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { subscribeUserSettings, type UserSettings } from "@/services/userSettings";
+import { subscribeUserSettings, type UserSettings } from "@/modules/auth/services/userSettings";
 
 export function useUserSettings(uid: string | null) {
   const queryClient = useQueryClient();

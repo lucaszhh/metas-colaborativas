@@ -1,10 +1,10 @@
 import { useCallback, useEffect, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
-import { useSession } from "@/auth/useSession";
-import { useMyWorkspaces } from "@/features/workspaces/hooks/useMyWorkspaces";
-import { useUserSettings } from "@/features/userSettings/hooks/useUserSettings";
-import { useCreateWorkspace } from "@/features/workspaces/hooks/useCreateWorkspace";
-import { setActiveWorkspaceId as persistActiveWorkspaceId } from "@/services/userSettings";
+import { useSession } from "@/modules/auth/useSession";
+import { useMyWorkspaces } from "@/modules/workspaces/hooks/useMyWorkspaces";
+import { useUserSettings } from "@/modules/auth/hooks/useUserSettings";
+import { useCreateWorkspace } from "@/modules/workspaces/hooks/useCreateWorkspace";
+import { setActiveWorkspaceId as persistActiveWorkspaceId } from "@/modules/auth/services/userSettings";
 
 export function useActiveWorkspace() {
   const { user, loading: sessionLoading } = useSession();
