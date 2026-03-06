@@ -35,6 +35,9 @@ export function subscribeUserSettings(params: {
       const data = snap.data() as { activeWorkspaceId?: string | null };
       onChange({ activeWorkspaceId: data.activeWorkspaceId ?? null });
     },
-    (err) => onError?.(err)
+    (err) => {
+      console.error("[userSettings] snapshot error:", err);
+      onError?.(err);
+    }
   );
 }
