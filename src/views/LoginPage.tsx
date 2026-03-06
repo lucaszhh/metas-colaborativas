@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { loginWithGoogle } from "@/modules/auth/actions";
 import { useSession } from "@/modules/auth/useSession";
 import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 
 export function LoginPage() {
   const navigate = useNavigate();
@@ -22,12 +23,9 @@ export function LoginPage() {
       <Card className="h-40">
         <CardContent className="flex flex-col justify-between h-full">
           <h1 className="text-2xl font-bold text-center">Metas Colaborativas</h1>
-          <button
-            onClick={handleLogin}
-            className="px-6 py-3 rounded bg-black text-white"
-          >
+          <Button onClick={handleLogin}>
             Iniciar sesión con Google
-          </button>
+          </Button>
         </CardContent>
       </Card>
     </div>
