@@ -27,6 +27,7 @@ export function AppHeader({
         >
           <Menu className="size-5" />
         </Button>
+        <img src="/logo.png" alt="Logo" className="h-6 w-6" />
         <div className="flex-1 font-semibold">{title}</div>
         <div className="flex items-center gap-2">
           {actions ?? <div className="w-8" />}

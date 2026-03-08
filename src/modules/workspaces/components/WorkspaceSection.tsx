@@ -15,7 +15,7 @@ export function WorkspaceSection(props: WorkspaceSectionProps) {
   const { loading, error, onOpenCreateWorkspace, onSelectWorkspace, controller } = props;
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex flex-col gap-4 mt-8 md:mt-0">
       <div className="flex items-center justify-between font-bold">
         Workspaces
         <Button
