@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import { Typography } from "@/components/ui/typography";
 
 type GoalListProps = {
   title: string;
@@ -18,9 +19,21 @@ export function GoalList(props: GoalListProps) {
 
   return (
     <div className="space-y-2">
-      <div className="flex items-center justify-between text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-        <span>{title}</span>
-        <span>{count}</span>
+      <div className="flex items-center justify-between">
+        <Typography
+          variant="small"
+          as="span"
+          className="uppercase tracking-wide text-muted-foreground"
+        >
+          {title}
+        </Typography>
+        <Typography
+          variant="small"
+          as="span"
+          className="uppercase tracking-wide text-muted-foreground"
+        >
+          {count}
+        </Typography>
       </div>
 
       {loading ? (
@@ -34,7 +47,7 @@ export function GoalList(props: GoalListProps) {
       )}
 
       {hasSelectedList && !loading && count === 0 && (
-        <div className="text-sm text-muted-foreground">{emptyMessage}</div>
+        <Typography variant="muted">{emptyMessage}</Typography>
       )}
     </div>
   );

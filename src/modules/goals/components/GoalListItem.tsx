@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Typography } from "@/components/ui/typography";
 import { cn } from "@/lib/utils";
 import type { GoalListDoc } from "@/services/goals";
 
@@ -54,7 +55,9 @@ export function GoalListItem(props: GoalListItemProps) {
           onClick={() => onSelect(list.id)}
           disabled={isEditing || isConfirmingDelete}
         >
-          {list.title}
+          <Typography variant="small" as="span">
+            {list.title}
+          </Typography>
         </button>
 
         {!isEditing && !isConfirmingDelete && (

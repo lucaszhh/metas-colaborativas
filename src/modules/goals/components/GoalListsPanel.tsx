@@ -1,4 +1,5 @@
 import { GoalListItem } from "@/modules/goals/components/GoalListItem";
+import { Typography } from "@/components/ui/typography";
 import type { ListsSectionController } from "@/modules/goals/hooks/useListsSection";
 
 function Skeleton({ className }: { className?: string }) {
@@ -44,13 +45,15 @@ export function GoalListsPanel({ workspaceId, controller }: GoalListsPanelProps)
         ))}
 
       {workspaceId && !controller.loading && controller.lists.length === 0 && (
-        <div className="text-sm text-muted-foreground">No hay listas todavía. Creá la primera.</div>
+        <Typography variant="muted">
+          No hay listas todavía. Creá la primera.
+        </Typography>
       )}
 
       {!workspaceId && (
-        <div className="text-sm text-muted-foreground">
+        <Typography variant="muted">
           Seleccioná un workspace para ver sus listas.
-        </div>
+        </Typography>
       )}
     </div>
   );

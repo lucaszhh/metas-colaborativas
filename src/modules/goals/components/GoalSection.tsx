@@ -1,8 +1,9 @@
 import { Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { Typography } from "@/components/ui/typography";
 import { ErrorBanner } from "@/modules/goals/components/ErrorBanner";
 import { GoalItem } from "@/modules/goals/components/GoalItem";
 import { GoalList } from "@/modules/goals/components/GoalList";
@@ -19,7 +20,9 @@ export function GoalSection({ workspaceId, selectedList, controller }: GoalSecti
   return (
     <Card className="md:col-span-2">
       <CardHeader>
-        <CardTitle>Metas{selectedList ? ` — ${selectedList.title}` : ""}</CardTitle>
+        <Typography variant="h3">
+          Metas{selectedList ? ` — ${selectedList.title}` : ""}
+        </Typography>
       </CardHeader>
 
       <CardContent className="space-y-3">
@@ -107,9 +110,9 @@ export function GoalSection({ workspaceId, selectedList, controller }: GoalSecti
           </div>
 
           {!workspaceId && (
-            <div className="text-sm text-muted-foreground">
+            <Typography variant="muted">
               Seleccioná un workspace para ver metas.
-            </div>
+            </Typography>
           )}
         </ScrollArea>
       </CardContent>

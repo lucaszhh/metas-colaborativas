@@ -1,8 +1,9 @@
 import { Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { Typography } from "@/components/ui/typography";
 import { ErrorBanner } from "@/modules/goals/components/ErrorBanner";
 import { GoalListsPanel } from "@/modules/goals/components/GoalListsPanel";
 import type { ListsSectionController } from "@/modules/goals/hooks/useListsSection";
@@ -16,7 +17,7 @@ export function ListsSection({ workspaceId, controller }: ListsSectionProps) {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Listas</CardTitle>
+        <Typography variant="h3">Listas</Typography>
       </CardHeader>
 
       <CardContent className="space-y-3">

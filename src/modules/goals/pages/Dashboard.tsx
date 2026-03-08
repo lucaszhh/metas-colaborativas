@@ -1,5 +1,6 @@
 import { useActiveWorkspace } from "@/modules/workspaces/hooks/useActiveWorkspace";
 import { Separator } from "@/components/ui/separator";
+import { Typography } from "@/components/ui/typography";
 import { DashboardSkeleton } from "@/modules/goals/components/DashboardSkeleton";
 import { GoalSection } from "@/modules/goals/components/GoalSection";
 import { ListsSection } from "@/modules/goals/components/ListsSection";
@@ -24,7 +25,9 @@ export function Dashboard() {
   return (
     <div className="space-y-4">
       <div>
-        <h1 className="text-2xl font-bold">Dashboard</h1>
+        <Typography variant="h1" className="text-2xl">
+          Dashboard
+        </Typography>
       </div>
 
       <Separator />

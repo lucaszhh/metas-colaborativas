@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { Typography } from "@/components/ui/typography";
 import type { GoalDoc, GoalStatus } from "@/services/goals";
 
 type GoalItemProps = {
@@ -56,7 +57,13 @@ export function GoalItem(props: GoalItemProps) {
           disabled={isUpdatingStatus || isEditing || isConfirmingDelete}
           className="h-4 w-4 accent-primary"
         />
-        <span className={isClosed ? "line-through text-muted-foreground" : ""}>{goal.title}</span>
+        <Typography
+          variant="small"
+          as="span"
+          className={isClosed ? "line-through text-muted-foreground" : ""}
+        >
+          {goal.title}
+        </Typography>
 
         {!isEditing && !isConfirmingDelete && (
           <div className="ml-auto flex gap-2">
@@ -71,7 +78,9 @@ export function GoalItem(props: GoalItemProps) {
       </div>
 
       {!isEditing && goal.description && (
-        <p className="text-xs text-muted-foreground">{goal.description}</p>
+        <Typography variant="muted" className="text-xs">
+          {goal.description}
+        </Typography>
       )}
 
       {isConfirmingDelete && (
