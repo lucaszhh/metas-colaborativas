@@ -1,3 +1,4 @@
+import { useRef } from "react";
 import { Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
@@ -14,6 +15,17 @@ type ListsSectionProps = {
 };
 
 export function ListsSection({ workspaceId, controller }: ListsSectionProps) {
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  const focusInput = () => {
+    requestAnimationFrame(() => inputRef.current?.focus());
+  };
+
+  const handleCreateList = async () => {
+    await controller.handleCreateList();
+    focusInput();
+  };
+
   return (
     <Card>
       <CardHeader>
@@ -23,13 +35,19 @@ export function ListsSection({ workspaceId, controller }: ListsSectionProps) {
       <CardContent className="space-y-3">
         <div className="flex gap-2">
           <Input
+            ref={inputRef}
             placeholder="Nueva lista"
             value={controller.newListTitle}
             onChange={(event) => controller.setNewListTitle(event.target.value)}
+            onKeyDown={(event) => {
+              if (event.key !== "Enter" || event.shiftKey) return;
+              event.preventDefault();
+              void handleCreateList();
+            }}
             disabled={!workspaceId || controller.createListPending}
           />
           <Button
-            onClick={controller.handleCreateList}
+            onClick={handleCreateList}
             disabled={!workspaceId || controller.createListPending}
           >
             {controller.createListPending && <Loader2 className="animate-spin" />}

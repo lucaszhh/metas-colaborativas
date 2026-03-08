@@ -1,3 +1,4 @@
+import { useRef } from "react";
 import { Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
@@ -17,6 +18,17 @@ type GoalSectionProps = {
 };
 
 export function GoalSection({ workspaceId, selectedList, controller }: GoalSectionProps) {
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  const focusInput = () => {
+    requestAnimationFrame(() => inputRef.current?.focus());
+  };
+
+  const handleCreateGoal = async () => {
+    await controller.handleCreateGoal();
+    focusInput();
+  };
+
   return (
     <Card className="md:col-span-2">
       <CardHeader>
@@ -28,13 +40,19 @@ export function GoalSection({ workspaceId, selectedList, controller }: GoalSecti
       <CardContent className="space-y-3">
         <div className="flex gap-2">
           <Input
+            ref={inputRef}
             placeholder="Nueva meta"
             value={controller.newGoalTitle}
             onChange={(event) => controller.setNewGoalTitle(event.target.value)}
+            onKeyDown={(event) => {
+              if (event.key !== "Enter" || event.shiftKey) return;
+              event.preventDefault();
+              void handleCreateGoal();
+            }}
             disabled={!selectedList || !workspaceId || controller.createGoalPending}
           />
           <Button
-            onClick={controller.handleCreateGoal}
+            onClick={handleCreateGoal}
             disabled={!selectedList || !workspaceId || controller.createGoalPending}
           >
             {controller.createGoalPending && <Loader2 className="animate-spin" />}

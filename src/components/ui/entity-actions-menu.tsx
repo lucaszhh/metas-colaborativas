@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { MoreHorizontal } from "lucide-react";
+import { MoreHorizontal, SquarePen, Trash2 } from "lucide-react";
 import { Modal } from "@/components/Modal";
 import { Button } from "@/components/ui/button";
 import { DialogClose, DialogFooter } from "@/components/ui/dialog";
@@ -41,7 +41,13 @@ export function EntityActionsMenu({
   deleteDisabled = false,
   deletePending = false,
 }: EntityActionsMenuProps) {
+  const [menuOpen, setMenuOpen] = useState(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+
+  const closeMenuAndRun = (callback: () => void) => {
+    setMenuOpen(false);
+    requestAnimationFrame(callback);
+  };
 
   const handleDelete = async () => {
     if (!onDelete || deletePending) return;
@@ -51,7 +57,7 @@ export function EntityActionsMenu({
 
   return (
     <>
-      <DropdownMenu>
+      <DropdownMenu open={menuOpen} onOpenChange={setMenuOpen}>
         <DropdownMenuTrigger asChild>
           <Button
             type="button"
@@ -70,7 +76,14 @@ export function EntityActionsMenu({
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
           {onEdit && (
-            <DropdownMenuItem onSelect={onEdit} disabled={editDisabled}>
+            <DropdownMenuItem
+              onSelect={(event) => {
+                event.preventDefault();
+                closeMenuAndRun(onEdit);
+              }}
+              disabled={editDisabled}
+            >
+              <SquarePen />
               {editLabel}
             </DropdownMenuItem>
           )}
@@ -79,10 +92,11 @@ export function EntityActionsMenu({
               variant="destructive"
               onSelect={(event) => {
                 event.preventDefault();
-                setDeleteDialogOpen(true);
+                closeMenuAndRun(() => setDeleteDialogOpen(true));
               }}
               disabled={deleteDisabled || deletePending}
             >
+              <Trash2 />
               {deleteLabel}
             </DropdownMenuItem>
           )}

@@ -100,6 +100,7 @@ export function GoalItem(props: GoalItemProps) {
             onChange={(event) => onEditingDescriptionChange(event.target.value)}
             placeholder="Descripción"
             disabled={isUpdatingGoal}
+            className="h-32 resize-none overflow-y-auto"
           />
         </div>
         <DialogFooter className="pt-2">
