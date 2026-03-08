@@ -4,11 +4,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { ErrorBanner } from "@/modules/goals/components/ErrorBanner";
+import { GoalListsPanel } from "@/modules/goals/components/GoalListsPanel";
 import type { ListsSectionController } from "@/modules/goals/hooks/useListsSection";
-
-function Skeleton({ className }: { className?: string }) {
-  return <div className={["animate-pulse rounded-md bg-muted", className].join(" ")} />;
-}
 
 type ListsSectionProps = {
   workspaceId: string | null;
@@ -42,39 +39,7 @@ export function ListsSection({ workspaceId, controller }: ListsSectionProps) {
         {controller.error && <ErrorBanner message="No se pudieron cargar las listas." />}
 
         <ScrollArea className="h-105 pr-2">
-          <div className="space-y-2">
-            {controller.loading && (
-              <>
-                <Skeleton className="h-9" />
-                <Skeleton className="h-9" />
-                <Skeleton className="h-9" />
-              </>
-            )}
-
-            {!controller.loading &&
-              controller.lists.map((list) => (
-                <Button
-                  key={list.id}
-                  variant={list.id === controller.selectedListId ? "default" : "outline"}
-                  className="w-full justify-start"
-                  onClick={() => controller.setSelectedListId(list.id)}
-                >
-                  {list.title}
-                </Button>
-              ))}
-
-            {workspaceId && !controller.loading && controller.lists.length === 0 && (
-              <div className="text-sm text-muted-foreground">
-                No hay listas todavía. Creá la primera.
-              </div>
-            )}
-
-            {!workspaceId && (
-              <div className="text-sm text-muted-foreground">
-                Seleccioná un workspace para ver sus listas.
-              </div>
-            )}
-          </div>
+          <GoalListsPanel workspaceId={workspaceId} controller={controller} />
         </ScrollArea>
       </CardContent>
     </Card>

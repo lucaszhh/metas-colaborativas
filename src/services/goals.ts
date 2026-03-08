@@ -1,9 +1,11 @@
 import { db } from "@/lib/firebase";
+import { deleteDocumentRefs } from "@/lib/firestore-helpers";
 import {
   addDoc,
   collection,
   deleteDoc,
   doc,
+  getDocs,
   onSnapshot,
   orderBy,
   query,
@@ -110,6 +112,34 @@ export async function createGoalList(params: {
   });
 
   return ref.id;
+}
+
+export async function updateGoalList(params: {
+  workspaceId: string;
+  listId: string;
+  title: string;
+}) {
+  const { workspaceId, listId, title } = params;
+
+  await updateDoc(doc(db, "workspaces", workspaceId, "goalLists", listId), {
+    title,
+    updatedAt: serverTimestamp(),
+  });
+}
+
+export async function deleteGoalList(params: { workspaceId: string; listId: string }) {
+  const { workspaceId, listId } = params;
+
+  const goalsQuery = query(
+    collection(db, "workspaces", workspaceId, "goals"),
+    where("listId", "==", listId)
+  );
+  const goalsSnap = await getDocs(goalsQuery);
+
+  await deleteDocumentRefs([
+    ...goalsSnap.docs.map((goalDoc) => goalDoc.ref),
+    doc(db, "workspaces", workspaceId, "goalLists", listId),
+  ]);
 }
 
 export async function createGoal(params: {

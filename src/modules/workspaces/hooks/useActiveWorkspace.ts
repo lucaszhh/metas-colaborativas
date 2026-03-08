@@ -77,10 +77,11 @@ export function useActiveWorkspace() {
 
     if (pendingWorkspaceId) return;
 
-    setWorkspaceId(null);
+    const fallbackWorkspaceId = workspaces[0]?.id ?? null;
+    setWorkspaceId(fallbackWorkspaceId);
 
-    if (preferred) {
-      persistActiveWorkspace(null);
+    if (preferred !== fallbackWorkspaceId) {
+      persistActiveWorkspace(fallbackWorkspaceId);
     }
   }, [
     sessionLoading,

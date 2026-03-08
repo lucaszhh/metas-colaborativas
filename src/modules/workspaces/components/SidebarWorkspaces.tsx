@@ -1,7 +1,7 @@
-import { Button } from "@/components/ui/button";
-import { useActiveWorkspace } from "../hooks/useActiveWorkspace";
-import { Plus } from "lucide-react";
 import { useState } from "react";
+import { WorkspaceSection } from "@/modules/workspaces/components/WorkspaceSection";
+import { useWorkspaceSection } from "@/modules/workspaces/hooks/useWorkspaceSection";
+import { useActiveWorkspace } from "../hooks/useActiveWorkspace";
 import { ModalNewWorkspace } from "./ModalNewWorkspace";
 
 type SidebarWorkspacesProps = {
@@ -9,65 +9,25 @@ type SidebarWorkspacesProps = {
 };
 
 export const SidebarWorkspaces = ({ onSelectWorkspace }: SidebarWorkspacesProps) => {
-  const {
+  const { user, workspaces, workspaceId, setActiveWorkspaceId, error, loading } =
+    useActiveWorkspace();
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const controller = useWorkspaceSection({
+    userId: user?.uid ?? null,
     workspaces,
     workspaceId,
     setActiveWorkspaceId,
-    error,
-    loading,
-  } = useActiveWorkspace();
-
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  });
 
   return (
     <>
-      <div className="flex flex-col gap-4">
-        <div className="flex items-center justify-between font-bold">
-          Workspaces
-          <Button
-            onClick={() => setIsModalOpen(true)}
-            variant="outline"
-            size="sm"
-            disabled={loading}
-          >
-            <Plus /> Nuevo
-          </Button>
-        </div>
-
-        {error && (
-          <div className="text-xs text-destructive">
-            No se pudieron cargar tus workspaces.
-          </div>
-        )}
-
-        {loading && (
-          <div className="text-xs text-muted-foreground">Cargando workspaces...</div>
-        )}
-
-        {!loading && workspaces.length === 0 && (
-          <div className="text-xs text-muted-foreground">
-            Todavía no tenés workspaces. Creá el primero.
-          </div>
-        )}
-
-        <section className="flex flex-col gap-2">
-          {!loading &&
-            workspaces.map((workspace) => (
-              <Button
-                key={workspace.id}
-                variant={workspace.id === workspaceId ? "default" : "outline"}
-                className="w-full justify-start"
-                onClick={() => {
-                  setActiveWorkspaceId(workspace.id);
-                  onSelectWorkspace?.();
-                }}
-                size="sm"
-              >
-                {workspace.name}
-              </Button>
-            ))}
-        </section>
-      </div>
+      <WorkspaceSection
+        loading={loading}
+        error={error}
+        onOpenCreateWorkspace={() => setIsModalOpen(true)}
+        onSelectWorkspace={onSelectWorkspace}
+        controller={controller}
+      />
 
       <ModalNewWorkspace isOpen={isModalOpen} setIsOpen={setIsModalOpen} />
     </>

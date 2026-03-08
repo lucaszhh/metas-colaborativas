@@ -1,43 +1,10 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { sileo } from "sileo";
-import {
-  createGoal,
-  createGoalList,
-  deleteGoal,
-  updateGoal,
-  updateGoalStatus,
-} from "@/services/goals";
-import type { GoalDoc, GoalListDoc, GoalStatus } from "@/services/goals";
+import { createGoal, deleteGoal, updateGoal, updateGoalStatus } from "@/services/goals";
+import type { GoalDoc, GoalStatus } from "@/services/goals";
 
 export function useGoalMutations() {
   const queryClient = useQueryClient();
-
-  const createList = useMutation({
-    mutationFn: createGoalList,
-    onSuccess: (id, variables) => {
-      const key = ["goalLists", variables.workspaceId];
-      const prev = (queryClient.getQueryData(key) as GoalListDoc[] | undefined) ?? [];
-      if (!prev.some((l) => l.id === id)) {
-        queryClient.setQueryData(key, [
-          {
-            id,
-            title: variables.title,
-            createdBy: variables.uid,
-          },
-          ...prev,
-        ]);
-      }
-      sileo.success({
-        title: "Lista creada",
-        description: variables.title,
-      });
-    },
-    onError: () => {
-      sileo.error({
-        title: "No se pudo crear la lista",
-      });
-    },
-  });
 
   const createGoalItem = useMutation({
     mutationFn: createGoal,
@@ -172,7 +139,6 @@ export function useGoalMutations() {
   });
 
   return {
-    createList,
     createGoal: createGoalItem,
     updateStatus,
     updateGoal: updateGoalDetails,
