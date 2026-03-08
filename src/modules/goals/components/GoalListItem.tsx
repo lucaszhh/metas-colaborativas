@@ -1,5 +1,8 @@
+import type { KeyboardEvent } from "react";
+import { Modal } from "@/components/Modal";
 import { Button } from "@/components/ui/button";
 import { EntityActionsMenu } from "@/components/ui/entity-actions-menu";
+import { DialogClose, DialogFooter } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Typography } from "@/components/ui/typography";
 import { cn } from "@/lib/utils";
@@ -36,55 +39,74 @@ export function GoalListItem(props: GoalListItemProps) {
     onConfirmDelete,
   } = props;
 
-  return (
-    <div
-      className={cn(
-        "space-y-2 rounded-md border p-3 transition-colors",
-        isSelected && "border-primary bg-primary/5"
-      )}
-    >
-      <div className="flex items-center gap-2">
-        <button
-          type="button"
-          className="flex-1 text-left text-sm font-medium"
-          onClick={() => onSelect(list.id)}
-          disabled={isEditing}
-        >
-          <Typography variant="small" as="span">
-            {list.title}
-          </Typography>
-        </button>
+  const handleKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
+    if (isEditing) return;
 
-        {!isEditing && (
+    if (event.key === "Enter" || event.key === " ") {
+      event.preventDefault();
+      onSelect(list.id);
+    }
+  };
+
+  return (
+    <>
+      <div
+        className={cn(
+          "rounded-md border p-3 transition-colors",
+          "cursor-pointer hover:border-accent hover:bg-accent/40",
+          "focus-visible:ring-ring/50 focus-visible:outline-none focus-visible:ring-[3px]",
+          isSelected && "border-primary bg-primary/5 hover:bg-primary/10"
+        )}
+        role="button"
+        tabIndex={0}
+        onClick={() => onSelect(list.id)}
+        onKeyDown={handleKeyDown}
+      >
+        <div className="flex items-center gap-3">
+          <div className="min-w-0 flex-1">
+            <Typography variant="small" as="p" className="truncate">
+              {list.title}
+            </Typography>
+          </div>
+
           <EntityActionsMenu
             onEdit={() => onStartEdit(list)}
             onDelete={() => onConfirmDelete(list.id)}
             deleteTitle="Eliminar lista"
-            deleteDescription="Esta acción eliminará la lista seleccionada y sus metas asociadas. Confirmá que querés continuar."
+            deleteDescription="Esta acción eliminará la lista seleccionada. Confirmá que querés continuar."
             triggerLabel={`Abrir acciones de ${list.title}`}
             deletePending={isDeleting}
           />
-        )}
+        </div>
       </div>
 
-      {isEditing && (
-        <div className="space-y-2">
+      <Modal
+        title="Editar lista"
+        description="Actualizá el nombre de la lista."
+        open={isEditing}
+        onOpenChange={(open) => {
+          if (!open) onCancelEdit();
+        }}
+      >
+        <div className="space-y-3">
           <Input
             value={editingTitle}
             onChange={(event) => onEditingTitleChange(event.target.value)}
             placeholder="Nombre de la lista"
             disabled={isUpdating}
           />
-          <div className="flex items-center gap-2">
-            <Button size="xs" onClick={onSaveEdit} disabled={isUpdating}>
-              {isUpdating ? "Guardando..." : "Guardar"}
-            </Button>
-            <Button size="xs" variant="ghost" onClick={onCancelEdit}>
+        </div>
+        <DialogFooter className="pt-2">
+          <DialogClose asChild>
+            <Button variant="outline" disabled={isUpdating}>
               Cancelar
             </Button>
-          </div>
-        </div>
-      )}
-    </div>
+          </DialogClose>
+          <Button onClick={onSaveEdit} disabled={isUpdating}>
+            {isUpdating ? "Guardando..." : "Guardar"}
+          </Button>
+        </DialogFooter>
+      </Modal>
+    </>
   );
 }

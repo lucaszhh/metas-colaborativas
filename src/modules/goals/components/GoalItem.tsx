@@ -1,5 +1,7 @@
+import { Modal } from "@/components/Modal";
 import { Button } from "@/components/ui/button";
 import { EntityActionsMenu } from "@/components/ui/entity-actions-menu";
+import { DialogClose, DialogFooter } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Typography } from "@/components/ui/typography";
@@ -43,24 +45,24 @@ export function GoalItem(props: GoalItemProps) {
   const isClosed = goal.status === "close";
 
   return (
-    <div className="space-y-2 rounded-md border p-3">
-      <div className="flex items-center gap-3">
-        <input
-          type="checkbox"
-          checked={isClosed}
-          onChange={() => onToggleStatus(goal.id, isClosed ? "open" : "close")}
-          disabled={isUpdatingStatus || isEditing}
-          className="h-4 w-4 accent-primary"
-        />
-        <Typography
-          variant="small"
-          as="span"
-          className={isClosed ? "line-through text-muted-foreground" : ""}
-        >
-          {goal.title}
-        </Typography>
+    <>
+      <div className="space-y-2 rounded-md border p-3 transition-colors">
+        <div className="flex items-center gap-3">
+          <input
+            type="checkbox"
+            checked={isClosed}
+            onChange={() => onToggleStatus(goal.id, isClosed ? "open" : "close")}
+            disabled={isUpdatingStatus || isEditing}
+            className="h-4 w-4 accent-primary"
+          />
+          <Typography
+            variant="small"
+            as="span"
+            className={isClosed ? "line-through text-muted-foreground" : "flex-1"}
+          >
+            {goal.title}
+          </Typography>
 
-        {!isEditing && (
           <EntityActionsMenu
             onEdit={() => onStartEdit(goal)}
             onDelete={() => onConfirmDelete(goal.id)}
@@ -69,16 +71,24 @@ export function GoalItem(props: GoalItemProps) {
             triggerLabel={`Abrir acciones de ${goal.title}`}
             deletePending={isDeletingGoal}
           />
+        </div>
+
+        {goal.description && (
+          <Typography variant="muted" className="text-xs">
+            {goal.description}
+          </Typography>
         )}
       </div>
 
-      {!isEditing && goal.description && (
-        <Typography variant="muted" className="text-xs">
-          {goal.description}
-        </Typography>
-      )}
-      {isEditing && (
-        <div className="space-y-2">
+      <Modal
+        title="Editar meta"
+        description="Actualizá el título y la descripción de la meta."
+        open={isEditing}
+        onOpenChange={(open) => {
+          if (!open) onCancelEdit();
+        }}
+      >
+        <div className="space-y-3">
           <Input
             value={editingTitle}
             onChange={(event) => onEditingTitleChange(event.target.value)}
@@ -91,16 +101,18 @@ export function GoalItem(props: GoalItemProps) {
             placeholder="Descripción"
             disabled={isUpdatingGoal}
           />
-          <div className="flex items-center gap-2">
-            <Button size="xs" onClick={onSaveEdit} disabled={isUpdatingGoal}>
-              {isUpdatingGoal ? "Guardando..." : "Guardar"}
-            </Button>
-            <Button size="xs" variant="ghost" onClick={onCancelEdit}>
+        </div>
+        <DialogFooter className="pt-2">
+          <DialogClose asChild>
+            <Button variant="outline" disabled={isUpdatingGoal}>
               Cancelar
             </Button>
-          </div>
-        </div>
-      )}
-    </div>
+          </DialogClose>
+          <Button onClick={onSaveEdit} disabled={isUpdatingGoal}>
+            {isUpdatingGoal ? "Guardando..." : "Guardar"}
+          </Button>
+        </DialogFooter>
+      </Modal>
+    </>
   );
 }

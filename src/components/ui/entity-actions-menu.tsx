@@ -1,16 +1,8 @@
 import { useState } from "react";
 import { MoreHorizontal } from "lucide-react";
+import { Modal } from "@/components/Modal";
 import { Button } from "@/components/ui/button";
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
+import { DialogClose, DialogFooter } from "@/components/ui/dialog";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -68,6 +60,9 @@ export function EntityActionsMenu({
             className="ml-auto shrink-0"
             aria-label={triggerLabel}
             disabled={disabled}
+            onClick={(event) => event.stopPropagation()}
+            onPointerDown={(event) => event.stopPropagation()}
+            onKeyDown={(event) => event.stopPropagation()}
           >
             <MoreHorizontal />
             <span className="sr-only">{triggerLabel}</span>
@@ -94,20 +89,23 @@ export function EntityActionsMenu({
         </DropdownMenuContent>
       </DropdownMenu>
 
-      <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>{deleteTitle}</AlertDialogTitle>
-            <AlertDialogDescription>{deleteDescription}</AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel disabled={deletePending}>{cancelLabel}</AlertDialogCancel>
-            <AlertDialogAction onClick={handleDelete} disabled={deletePending}>
-              {deletePending ? "Eliminando..." : confirmLabel}
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
+      <Modal
+        title={deleteTitle}
+        description={deleteDescription}
+        open={deleteDialogOpen}
+        onOpenChange={setDeleteDialogOpen}
+      >
+        <DialogFooter className="pt-2">
+          <DialogClose asChild>
+            <Button variant="outline" disabled={deletePending}>
+              {cancelLabel}
+            </Button>
+          </DialogClose>
+          <Button variant="destructive" onClick={handleDelete} disabled={deletePending}>
+            {deletePending ? "Eliminando..." : confirmLabel}
+          </Button>
+        </DialogFooter>
+      </Modal>
     </>
   );
 }
