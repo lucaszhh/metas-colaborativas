@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/button";
+import { EntityActionsMenu } from "@/components/ui/entity-actions-menu";
 import { Input } from "@/components/ui/input";
 import { Typography } from "@/components/ui/typography";
 import { cn } from "@/lib/utils";
@@ -10,15 +11,12 @@ type GoalListItemProps = {
   isEditing: boolean;
   isUpdating: boolean;
   isDeleting: boolean;
-  isConfirmingDelete: boolean;
   editingTitle: string;
   onSelect: (listId: string) => void;
   onStartEdit: (list: GoalListDoc) => void;
   onEditingTitleChange: (title: string) => void;
   onSaveEdit: () => void | Promise<void>;
   onCancelEdit: () => void;
-  onRequestDelete: (listId: string) => void;
-  onCancelDelete: () => void;
   onConfirmDelete: (listId: string) => void | Promise<void>;
 };
 
@@ -29,15 +27,12 @@ export function GoalListItem(props: GoalListItemProps) {
     isEditing,
     isUpdating,
     isDeleting,
-    isConfirmingDelete,
     editingTitle,
     onSelect,
     onStartEdit,
     onEditingTitleChange,
     onSaveEdit,
     onCancelEdit,
-    onRequestDelete,
-    onCancelDelete,
     onConfirmDelete,
   } = props;
 
@@ -53,40 +48,24 @@ export function GoalListItem(props: GoalListItemProps) {
           type="button"
           className="flex-1 text-left text-sm font-medium"
           onClick={() => onSelect(list.id)}
-          disabled={isEditing || isConfirmingDelete}
+          disabled={isEditing}
         >
           <Typography variant="small" as="span">
             {list.title}
           </Typography>
         </button>
 
-        {!isEditing && !isConfirmingDelete && (
-          <div className="ml-auto flex gap-2">
-            <Button size="xs" variant="outline" onClick={() => onStartEdit(list)}>
-              Editar
-            </Button>
-            <Button size="xs" variant="destructive" onClick={() => onRequestDelete(list.id)}>
-              Eliminar
-            </Button>
-          </div>
+        {!isEditing && (
+          <EntityActionsMenu
+            onEdit={() => onStartEdit(list)}
+            onDelete={() => onConfirmDelete(list.id)}
+            deleteTitle="Eliminar lista"
+            deleteDescription="Esta acción eliminará la lista seleccionada y sus metas asociadas. Confirmá que querés continuar."
+            triggerLabel={`Abrir acciones de ${list.title}`}
+            deletePending={isDeleting}
+          />
         )}
       </div>
-
-      {isConfirmingDelete && (
-        <div className="flex items-center gap-2">
-          <Button
-            size="xs"
-            variant="destructive"
-            onClick={() => onConfirmDelete(list.id)}
-            disabled={isDeleting}
-          >
-            {isDeleting ? "Eliminando..." : "Confirmar"}
-          </Button>
-          <Button size="xs" variant="ghost" onClick={onCancelDelete}>
-            Cancelar
-          </Button>
-        </div>
-      )}
 
       {isEditing && (
         <div className="space-y-2">

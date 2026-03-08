@@ -34,7 +34,6 @@ export function WorkspaceList(props: WorkspaceListProps) {
             isEditing={controller.editingWorkspaceId === workspace.id}
             isUpdating={controller.isUpdatingWorkspace(workspace.id)}
             isDeleting={controller.isDeletingWorkspace(workspace.id)}
-            isConfirmingDelete={controller.confirmDeleteId === workspace.id}
             editingName={controller.editingName}
             onSelect={(workspaceId) => {
               controller.handleSelectWorkspace(workspaceId);
@@ -44,8 +43,6 @@ export function WorkspaceList(props: WorkspaceListProps) {
             onEditingNameChange={controller.setEditingName}
             onSaveEdit={controller.saveEditWorkspace}
             onCancelEdit={controller.cancelEditWorkspace}
-            onRequestDelete={controller.requestDeleteWorkspace}
-            onCancelDelete={controller.cancelDeleteWorkspace}
             onConfirmDelete={controller.confirmDeleteWorkspace}
           />
         ))}

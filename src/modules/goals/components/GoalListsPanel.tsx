@@ -31,15 +31,12 @@ export function GoalListsPanel({ workspaceId, controller }: GoalListsPanelProps)
             isEditing={controller.editingListId === list.id}
             isUpdating={controller.isUpdatingList(list.id)}
             isDeleting={controller.isDeletingList(list.id)}
-            isConfirmingDelete={controller.confirmDeleteId === list.id}
             editingTitle={controller.editingTitle}
             onSelect={controller.setSelectedListId}
             onStartEdit={controller.startEditList}
             onEditingTitleChange={controller.setEditingTitle}
             onSaveEdit={controller.saveEditList}
             onCancelEdit={controller.cancelEditList}
-            onRequestDelete={controller.requestDeleteList}
-            onCancelDelete={controller.cancelDeleteList}
             onConfirmDelete={controller.confirmDeleteList}
           />
         ))}

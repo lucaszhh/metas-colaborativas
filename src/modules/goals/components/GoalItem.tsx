@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/button";
+import { EntityActionsMenu } from "@/components/ui/entity-actions-menu";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Typography } from "@/components/ui/typography";
@@ -10,7 +11,6 @@ type GoalItemProps = {
   isUpdatingStatus: boolean;
   isUpdatingGoal: boolean;
   isDeletingGoal: boolean;
-  isConfirmingDelete: boolean;
   editingTitle: string;
   editingDescription: string;
   onToggleStatus: (goalId: string, status: GoalStatus) => void;
@@ -19,8 +19,6 @@ type GoalItemProps = {
   onEditingDescriptionChange: (description: string) => void;
   onSaveEdit: () => void | Promise<void>;
   onCancelEdit: () => void;
-  onRequestDelete: (goalId: string) => void;
-  onCancelDelete: () => void;
   onConfirmDelete: (goalId: string) => void | Promise<void>;
 };
 
@@ -31,7 +29,6 @@ export function GoalItem(props: GoalItemProps) {
     isUpdatingStatus,
     isUpdatingGoal,
     isDeletingGoal,
-    isConfirmingDelete,
     editingTitle,
     editingDescription,
     onToggleStatus,
@@ -40,8 +37,6 @@ export function GoalItem(props: GoalItemProps) {
     onEditingDescriptionChange,
     onSaveEdit,
     onCancelEdit,
-    onRequestDelete,
-    onCancelDelete,
     onConfirmDelete,
   } = props;
 
@@ -54,7 +49,7 @@ export function GoalItem(props: GoalItemProps) {
           type="checkbox"
           checked={isClosed}
           onChange={() => onToggleStatus(goal.id, isClosed ? "open" : "close")}
-          disabled={isUpdatingStatus || isEditing || isConfirmingDelete}
+          disabled={isUpdatingStatus || isEditing}
           className="h-4 w-4 accent-primary"
         />
         <Typography
@@ -65,15 +60,15 @@ export function GoalItem(props: GoalItemProps) {
           {goal.title}
         </Typography>
 
-        {!isEditing && !isConfirmingDelete && (
-          <div className="ml-auto flex gap-2">
-            <Button size="xs" variant="outline" onClick={() => onStartEdit(goal)}>
-              Editar
-            </Button>
-            <Button size="xs" variant="destructive" onClick={() => onRequestDelete(goal.id)}>
-              Eliminar
-            </Button>
-          </div>
+        {!isEditing && (
+          <EntityActionsMenu
+            onEdit={() => onStartEdit(goal)}
+            onDelete={() => onConfirmDelete(goal.id)}
+            deleteTitle="Eliminar meta"
+            deleteDescription="Esta acción eliminará la meta de forma permanente."
+            triggerLabel={`Abrir acciones de ${goal.title}`}
+            deletePending={isDeletingGoal}
+          />
         )}
       </div>
 
@@ -82,23 +77,6 @@ export function GoalItem(props: GoalItemProps) {
           {goal.description}
         </Typography>
       )}
-
-      {isConfirmingDelete && (
-        <div className="flex items-center gap-2">
-          <Button
-            size="xs"
-            variant="destructive"
-            onClick={() => onConfirmDelete(goal.id)}
-            disabled={isDeletingGoal}
-          >
-            {isDeletingGoal ? "Eliminando..." : "Confirmar"}
-          </Button>
-          <Button size="xs" variant="ghost" onClick={onCancelDelete}>
-            Cancelar
-          </Button>
-        </div>
-      )}
-
       {isEditing && (
         <div className="space-y-2">
           <Input

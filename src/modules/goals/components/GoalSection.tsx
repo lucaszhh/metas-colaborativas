@@ -61,7 +61,6 @@ export function GoalSection({ workspaceId, selectedList, controller }: GoalSecti
                   isUpdatingStatus={controller.isUpdatingStatus(goal.id)}
                   isUpdatingGoal={controller.isUpdatingGoal(goal.id)}
                   isDeletingGoal={controller.isDeletingGoal(goal.id)}
-                  isConfirmingDelete={controller.confirmDeleteId === goal.id}
                   editingTitle={controller.editingTitle}
                   editingDescription={controller.editingDescription}
                   onToggleStatus={controller.handleToggleGoal}
@@ -70,8 +69,6 @@ export function GoalSection({ workspaceId, selectedList, controller }: GoalSecti
                   onEditingDescriptionChange={controller.setEditingDescription}
                   onSaveEdit={controller.saveEditGoal}
                   onCancelEdit={controller.cancelEditGoal}
-                  onRequestDelete={controller.requestDeleteGoal}
-                  onCancelDelete={controller.cancelDeleteGoal}
                   onConfirmDelete={controller.confirmDeleteGoal}
                 />
               ))}
@@ -92,7 +89,6 @@ export function GoalSection({ workspaceId, selectedList, controller }: GoalSecti
                   isUpdatingStatus={controller.isUpdatingStatus(goal.id)}
                   isUpdatingGoal={controller.isUpdatingGoal(goal.id)}
                   isDeletingGoal={controller.isDeletingGoal(goal.id)}
-                  isConfirmingDelete={controller.confirmDeleteId === goal.id}
                   editingTitle={controller.editingTitle}
                   editingDescription={controller.editingDescription}
                   onToggleStatus={controller.handleToggleGoal}
@@ -101,8 +97,6 @@ export function GoalSection({ workspaceId, selectedList, controller }: GoalSecti
                   onEditingDescriptionChange={controller.setEditingDescription}
                   onSaveEdit={controller.saveEditGoal}
                   onCancelEdit={controller.cancelEditGoal}
-                  onRequestDelete={controller.requestDeleteGoal}
-                  onCancelDelete={controller.cancelDeleteGoal}
                   onConfirmDelete={controller.confirmDeleteGoal}
                 />
               ))}

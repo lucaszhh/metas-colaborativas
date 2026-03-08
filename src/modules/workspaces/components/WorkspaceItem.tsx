@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/button";
+import { EntityActionsMenu } from "@/components/ui/entity-actions-menu";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 import type { WorkspaceSummary } from "@/services/workspaces.queries";
@@ -9,15 +10,12 @@ type WorkspaceItemProps = {
   isEditing: boolean;
   isUpdating: boolean;
   isDeleting: boolean;
-  isConfirmingDelete: boolean;
   editingName: string;
   onSelect: (workspaceId: string) => void;
   onStartEdit: (workspace: WorkspaceSummary) => void;
   onEditingNameChange: (name: string) => void;
   onSaveEdit: () => void | Promise<void>;
   onCancelEdit: () => void;
-  onRequestDelete: (workspaceId: string) => void;
-  onCancelDelete: () => void;
   onConfirmDelete: (workspaceId: string) => void | Promise<void>;
 };
 
@@ -28,15 +26,12 @@ export function WorkspaceItem(props: WorkspaceItemProps) {
     isEditing,
     isUpdating,
     isDeleting,
-    isConfirmingDelete,
     editingName,
     onSelect,
     onStartEdit,
     onEditingNameChange,
     onSaveEdit,
     onCancelEdit,
-    onRequestDelete,
-    onCancelDelete,
     onConfirmDelete,
   } = props;
 
@@ -52,42 +47,22 @@ export function WorkspaceItem(props: WorkspaceItemProps) {
           type="button"
           className="flex-1 text-left text-sm font-medium"
           onClick={() => onSelect(workspace.id)}
-          disabled={isEditing || isConfirmingDelete}
+          disabled={isEditing}
         >
           {workspace.name}
         </button>
 
-        {!isEditing && !isConfirmingDelete && (
-          <div className="ml-auto flex gap-2">
-            <Button size="xs" variant="outline" onClick={() => onStartEdit(workspace)}>
-              Editar
-            </Button>
-            <Button
-              size="xs"
-              variant="destructive"
-              onClick={() => onRequestDelete(workspace.id)}
-            >
-              Eliminar
-            </Button>
-          </div>
+        {!isEditing && (
+          <EntityActionsMenu
+            onEdit={() => onStartEdit(workspace)}
+            onDelete={() => onConfirmDelete(workspace.id)}
+            deleteTitle="Eliminar workspace"
+            deleteDescription="Esta acción eliminará el workspace y no se puede deshacer."
+            triggerLabel={`Abrir acciones de ${workspace.name}`}
+            deletePending={isDeleting}
+          />
         )}
       </div>
-
-      {isConfirmingDelete && (
-        <div className="flex items-center gap-2">
-          <Button
-            size="xs"
-            variant="destructive"
-            onClick={() => onConfirmDelete(workspace.id)}
-            disabled={isDeleting}
-          >
-            {isDeleting ? "Eliminando..." : "Confirmar"}
-          </Button>
-          <Button size="xs" variant="ghost" onClick={onCancelDelete}>
-            Cancelar
-          </Button>
-        </div>
-      )}
 
       {isEditing && (
         <div className="space-y-2">
