@@ -14,7 +14,7 @@ import {
   where,
 } from "firebase/firestore";
 
-export type GoalListDoc = {
+export type RoleDoc = {
   id: string;
   title: string;
   createdBy: string;
@@ -24,22 +24,22 @@ export type GoalStatus = "open" | "close";
 
 export type GoalDoc = {
   id: string;
-  listId: string;
+  roleId: string;
   title: string;
   status: GoalStatus;
   createdBy: string;
   description?: string;
 };
 
-export function subscribeGoalLists(params: {
-  workspaceId: string;
-  onChange: (lists: GoalListDoc[]) => void;
+export function subscribeRoles(params: {
+  scopeId: string;
+  onChange: (roles: RoleDoc[]) => void;
   onError?: (e: unknown) => void;
 }) {
-  const { workspaceId, onChange, onError } = params;
+  const { scopeId, onChange, onError } = params;
 
   const q = query(
-    collection(db, "workspaces", workspaceId, "goalLists"),
+    collection(db, "scopes", scopeId, "roles"),
     orderBy("createdAt", "desc")
   );
 
@@ -48,7 +48,7 @@ export function subscribeGoalLists(params: {
     (snap) => {
       const data = snap.docs.map((d) => ({
         id: d.id,
-        ...(d.data() as Omit<GoalListDoc, "id">),
+        ...(d.data() as Omit<RoleDoc, "id">),
       }));
       onChange(data);
     },
@@ -56,17 +56,17 @@ export function subscribeGoalLists(params: {
   );
 }
 
-export function subscribeGoalsByList(params: {
-  workspaceId: string;
-  listId: string;
+export function subscribeGoalsByRole(params: {
+  scopeId: string;
+  roleId: string;
   onChange: (goals: GoalDoc[]) => void;
   onError?: (e: unknown) => void;
 }) {
-  const { workspaceId, listId, onChange, onError } = params;
+  const { scopeId, roleId, onChange, onError } = params;
 
   const q = query(
-    collection(db, "workspaces", workspaceId, "goals"),
-    where("listId", "==", listId)
+    collection(db, "scopes", scopeId, "goals"),
+    where("roleId", "==", roleId)
   );
 
   return onSnapshot(
@@ -74,7 +74,7 @@ export function subscribeGoalsByList(params: {
     (snap) => {
       const data = snap.docs.map((d) => {
         const raw = d.data() as {
-          listId: string;
+          roleId: string;
           title?: string;
           createdBy?: string;
           description?: string;
@@ -84,7 +84,7 @@ export function subscribeGoalsByList(params: {
         const status: GoalStatus = raw.status ?? (raw.done ? "close" : "open");
         return {
           id: d.id,
-          listId: raw.listId,
+          roleId: raw.roleId,
           title: raw.title ?? "",
           status,
           createdBy: raw.createdBy ?? "",
@@ -97,14 +97,14 @@ export function subscribeGoalsByList(params: {
   );
 }
 
-export async function createGoalList(params: {
-  workspaceId: string;
+export async function createRole(params: {
+  scopeId: string;
   uid: string;
   title: string;
 }) {
-  const { workspaceId, uid, title } = params;
+  const { scopeId, uid, title } = params;
 
-  const ref = await addDoc(collection(db, "workspaces", workspaceId, "goalLists"), {
+  const ref = await addDoc(collection(db, "scopes", scopeId, "roles"), {
     title,
     createdBy: uid,
     createdAt: serverTimestamp(),
@@ -114,44 +114,44 @@ export async function createGoalList(params: {
   return ref.id;
 }
 
-export async function updateGoalList(params: {
-  workspaceId: string;
-  listId: string;
+export async function updateRole(params: {
+  scopeId: string;
+  roleId: string;
   title: string;
 }) {
-  const { workspaceId, listId, title } = params;
+  const { scopeId, roleId, title } = params;
 
-  await updateDoc(doc(db, "workspaces", workspaceId, "goalLists", listId), {
+  await updateDoc(doc(db, "scopes", scopeId, "roles", roleId), {
     title,
     updatedAt: serverTimestamp(),
   });
 }
 
-export async function deleteGoalList(params: { workspaceId: string; listId: string }) {
-  const { workspaceId, listId } = params;
+export async function deleteRole(params: { scopeId: string; roleId: string }) {
+  const { scopeId, roleId } = params;
 
   const goalsQuery = query(
-    collection(db, "workspaces", workspaceId, "goals"),
-    where("listId", "==", listId)
+    collection(db, "scopes", scopeId, "goals"),
+    where("roleId", "==", roleId)
   );
   const goalsSnap = await getDocs(goalsQuery);
 
   await deleteDocumentRefs([
     ...goalsSnap.docs.map((goalDoc) => goalDoc.ref),
-    doc(db, "workspaces", workspaceId, "goalLists", listId),
+    doc(db, "scopes", scopeId, "roles", roleId),
   ]);
 }
 
 export async function createGoal(params: {
-  workspaceId: string;
+  scopeId: string;
   uid: string;
-  listId: string;
+  roleId: string;
   title: string;
 }) {
-  const { workspaceId, uid, listId, title } = params;
+  const { scopeId, uid, roleId, title } = params;
 
-  const ref = await addDoc(collection(db, "workspaces", workspaceId, "goals"), {
-    listId,
+  const ref = await addDoc(collection(db, "scopes", scopeId, "goals"), {
+    roleId,
     title,
     status: "open" as GoalStatus,
     createdBy: uid,
@@ -164,13 +164,13 @@ export async function createGoal(params: {
 }
 
 export async function updateGoalStatus(params: {
-  workspaceId: string;
+  scopeId: string;
   goalId: string;
   status: GoalStatus;
 }) {
-  const { workspaceId, goalId, status } = params;
+  const { scopeId, goalId, status } = params;
 
-  await updateDoc(doc(db, "workspaces", workspaceId, "goals", goalId), {
+  await updateDoc(doc(db, "scopes", scopeId, "goals", goalId), {
     status,
     done: status === "close",
     updatedAt: serverTimestamp(),
@@ -178,21 +178,21 @@ export async function updateGoalStatus(params: {
 }
 
 export async function updateGoal(params: {
-  workspaceId: string;
+  scopeId: string;
   goalId: string;
   title: string;
   description: string;
 }) {
-  const { workspaceId, goalId, title, description } = params;
+  const { scopeId, goalId, title, description } = params;
 
-  await updateDoc(doc(db, "workspaces", workspaceId, "goals", goalId), {
+  await updateDoc(doc(db, "scopes", scopeId, "goals", goalId), {
     title,
     description,
     updatedAt: serverTimestamp(),
   });
 }
 
-export async function deleteGoal(params: { workspaceId: string; goalId: string }) {
-  const { workspaceId, goalId } = params;
-  await deleteDoc(doc(db, "workspaces", workspaceId, "goals", goalId));
+export async function deleteGoal(params: { scopeId: string; goalId: string }) {
+  const { scopeId, goalId } = params;
+  await deleteDoc(doc(db, "scopes", scopeId, "goals", goalId));
 }

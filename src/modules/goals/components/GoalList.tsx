@@ -5,7 +5,7 @@ type GoalListProps = {
   title: string;
   count: number;
   loading: boolean;
-  hasSelectedList: boolean;
+  hasSelectedRole: boolean;
   emptyMessage: string;
   children: ReactNode;
 };
@@ -15,7 +15,7 @@ function Skeleton({ className }: { className?: string }) {
 }
 
 export function GoalList(props: GoalListProps) {
-  const { title, count, loading, hasSelectedList, emptyMessage, children } = props;
+  const { title, count, loading, hasSelectedRole, emptyMessage, children } = props;
 
   return (
     <div className="space-y-2">
@@ -46,7 +46,7 @@ export function GoalList(props: GoalListProps) {
         children
       )}
 
-      {hasSelectedList && !loading && count === 0 && (
+      {hasSelectedRole && !loading && count === 0 && (
         <Typography variant="muted">{emptyMessage}</Typography>
       )}
     </div>

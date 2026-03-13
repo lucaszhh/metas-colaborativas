@@ -1,14 +1,14 @@
 import { useEffect, useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { subscribeMyWorkspaces, type WorkspaceSummary } from "@/services/workspaces.queries";
+import { subscribeMyScopes, type ScopeSummary } from "@/services/scopes.queries";
 
-export function useMyWorkspaces(uid: string | null) {
+export function useMyScopes(uid: string | null) {
   const queryClient = useQueryClient();
   const [ready, setReady] = useState(false);
   const [error, setError] = useState<unknown>(null);
 
   const query = useQuery({
-    queryKey: ["workspaces", uid],
+    queryKey: ["scopes", uid],
     queryFn: async () => [],
     enabled: false,
     initialData: [],
@@ -20,10 +20,10 @@ export function useMyWorkspaces(uid: string | null) {
 
     if (!uid) return;
 
-    const unsub = subscribeMyWorkspaces({
+    const unsub = subscribeMyScopes({
       uid,
       onChange: (data) => {
-        queryClient.setQueryData(["workspaces", uid], data);
+        queryClient.setQueryData(["scopes", uid], data);
         setReady(true);
       },
       onError: (e) => {
@@ -36,7 +36,7 @@ export function useMyWorkspaces(uid: string | null) {
   }, [uid, queryClient]);
 
   return {
-    workspaces: (query.data ?? []) as WorkspaceSummary[],
+    scopes: (query.data ?? []) as ScopeSummary[],
     loading: !!uid && !ready,
     error: error ?? query.error,
   };

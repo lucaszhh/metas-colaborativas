@@ -9,15 +9,15 @@ import { ErrorBanner } from "@/modules/goals/components/ErrorBanner";
 import { GoalItem } from "@/modules/goals/components/GoalItem";
 import { GoalList } from "@/modules/goals/components/GoalList";
 import type { GoalsSectionController } from "@/modules/goals/hooks/useGoalsSection";
-import type { GoalListDoc } from "@/services/goals";
+import type { RoleDoc } from "@/services/goals";
 
 type GoalSectionProps = {
-  workspaceId: string | null;
-  selectedList: GoalListDoc | null;
+  scopeId: string | null;
+  selectedRole: RoleDoc | null;
   controller: GoalsSectionController;
 };
 
-export function GoalSection({ workspaceId, selectedList, controller }: GoalSectionProps) {
+export function GoalSection({ scopeId, selectedRole, controller }: GoalSectionProps) {
   const inputRef = useRef<HTMLInputElement>(null);
 
   const focusInput = () => {
@@ -33,7 +33,7 @@ export function GoalSection({ workspaceId, selectedList, controller }: GoalSecti
     <Card className="md:col-span-2">
       <CardHeader>
         <Typography variant="h3">
-          Metas{selectedList ? ` — ${selectedList.title}` : ""}
+          Metas Semanales{selectedRole ? ` — ${selectedRole.title}` : ""}
         </Typography>
       </CardHeader>
 
@@ -49,11 +49,11 @@ export function GoalSection({ workspaceId, selectedList, controller }: GoalSecti
               event.preventDefault();
               void handleCreateGoal();
             }}
-            disabled={!selectedList || !workspaceId || controller.createGoalPending}
+            disabled={!selectedRole || !scopeId || controller.createGoalPending}
           />
           <Button
             onClick={handleCreateGoal}
-            disabled={!selectedList || !workspaceId || controller.createGoalPending}
+            disabled={!selectedRole || !scopeId || controller.createGoalPending}
           >
             {controller.createGoalPending && <Loader2 className="animate-spin" />}
             {controller.createGoalPending ? "Agregando..." : "Agregar"}
@@ -65,10 +65,10 @@ export function GoalSection({ workspaceId, selectedList, controller }: GoalSecti
         <ScrollArea className="h-105 pr-2">
           <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
             <GoalList
-              title="Open"
+              title="Abiertas"
               count={controller.openGoals.length}
               loading={controller.loading}
-              hasSelectedList={!!selectedList}
+              hasSelectedRole={!!selectedRole}
               emptyMessage="No hay metas abiertas."
             >
               {controller.openGoals.map((goal) => (
@@ -93,10 +93,10 @@ export function GoalSection({ workspaceId, selectedList, controller }: GoalSecti
             </GoalList>
 
             <GoalList
-              title="Close"
+              title="Cerradas"
               count={controller.closedGoals.length}
               loading={controller.loading}
-              hasSelectedList={!!selectedList}
+              hasSelectedRole={!!selectedRole}
               emptyMessage="No hay metas cerradas."
             >
               {controller.closedGoals.map((goal) => (
@@ -121,9 +121,9 @@ export function GoalSection({ workspaceId, selectedList, controller }: GoalSecti
             </GoalList>
           </div>
 
-          {!workspaceId && (
+          {!scopeId && (
             <Typography variant="muted">
-              Seleccioná un workspace para ver metas.
+              Selecciona un ambito para ver metas.
             </Typography>
           )}
         </ScrollArea>

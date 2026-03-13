@@ -1,11 +1,11 @@
-export interface Workspace {
+export interface Scope {
   name: string;
   ownerId: string;
   createdAt: Date | string | null;
   updatedAt: Date | string | null;
 }
 
-export interface GoalList {
+export interface Role {
   title: string;
   createdBy: string;
   createdAt: Date | string | null;
@@ -15,7 +15,7 @@ export interface GoalList {
 export type GoalStatus = "open" | "close";
 
 export interface Goal {
-  listId: string;
+  roleId: string;
   title: string;
   description?: string;
   status: GoalStatus;

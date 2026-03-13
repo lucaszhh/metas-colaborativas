@@ -1,21 +1,21 @@
-import { useActiveWorkspace } from "@/modules/workspaces/hooks/useActiveWorkspace";
+import { useActiveScope } from "@/modules/scopes/hooks/useActiveScope";
 import { Separator } from "@/components/ui/separator";
 import { Typography } from "@/components/ui/typography";
 import { DashboardSkeleton } from "@/modules/goals/components/DashboardSkeleton";
 import { GoalSection } from "@/modules/goals/components/GoalSection";
-import { ListsSection } from "@/modules/goals/components/ListsSection";
+import { RolesSection } from "@/modules/goals/components/RolesSection";
 import { useGoalsSection } from "@/modules/goals/hooks/useGoalsSection";
-import { useListsSection } from "@/modules/goals/hooks/useListsSection";
+import { useRolesSection } from "@/modules/goals/hooks/useRolesSection";
 
 export function Dashboard() {
-  const { user, workspaceId, loading } = useActiveWorkspace();
-  const listsSection = useListsSection({
-    workspaceId,
+  const { user, scopeId, loading } = useActiveScope();
+  const rolesSection = useRolesSection({
+    scopeId,
     userId: user?.uid ?? null,
   });
   const goalsSection = useGoalsSection({
-    workspaceId,
-    listId: listsSection.selectedListId,
+    scopeId,
+    roleId: rolesSection.selectedRoleId,
     userId: user?.uid ?? null,
   });
 
@@ -33,10 +33,10 @@ export function Dashboard() {
       <Separator />
 
       <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
-        <ListsSection workspaceId={workspaceId} controller={listsSection} />
+        <RolesSection scopeId={scopeId} controller={rolesSection} />
         <GoalSection
-          workspaceId={workspaceId}
-          selectedList={listsSection.selectedList}
+          scopeId={scopeId}
+          selectedRole={rolesSection.selectedRole}
           controller={goalsSection}
         />
       </div>

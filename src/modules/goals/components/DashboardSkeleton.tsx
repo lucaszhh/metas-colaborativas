@@ -17,7 +17,7 @@ export function DashboardSkeleton() {
       <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
         <Card>
           <CardHeader>
-            <CardTitle>Listas</CardTitle>
+            <CardTitle>Roles</CardTitle>
           </CardHeader>
           <CardContent className="space-y-3">
             <Skeleton className="h-9" />
@@ -31,7 +31,7 @@ export function DashboardSkeleton() {
 
         <Card className="md:col-span-2">
           <CardHeader>
-            <CardTitle>Metas</CardTitle>
+            <CardTitle>Metas Semanales</CardTitle>
           </CardHeader>
           <CardContent className="space-y-3">
             <Skeleton className="h-9" />

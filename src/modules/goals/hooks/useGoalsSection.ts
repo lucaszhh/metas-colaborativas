@@ -1,18 +1,18 @@
 import { useEffect, useMemo, useState } from "react";
 import { useGoalMutations } from "@/modules/goals/hooks/useGoalMutations";
-import { useGoalsByList } from "@/modules/goals/hooks/useGoalsByList";
+import { useGoalsByRole } from "@/modules/goals/hooks/useGoalsByRole";
 import type { GoalDoc, GoalStatus } from "@/services/goals";
 
 type UseGoalsSectionParams = {
-  workspaceId: string | null;
-  listId: string | null;
+  scopeId: string | null;
+  roleId: string | null;
   userId: string | null;
 };
 
 export function useGoalsSection(params: UseGoalsSectionParams) {
-  const { workspaceId, listId, userId } = params;
+  const { scopeId, roleId, userId } = params;
   const { createGoal, updateStatus, updateGoal, deleteGoal } = useGoalMutations();
-  const { goals, loading, error } = useGoalsByList(workspaceId, listId);
+  const { goals, loading, error } = useGoalsByRole(scopeId, roleId);
 
   const [newGoalTitle, setNewGoalTitle] = useState("");
   const [editingGoalId, setEditingGoalId] = useState<string | null>(null);
@@ -25,19 +25,19 @@ export function useGoalsSection(params: UseGoalsSectionParams) {
     setEditingTitle("");
     setEditingDescription("");
     setConfirmDeleteId(null);
-  }, [listId]);
+  }, [roleId]);
 
   const openGoals = useMemo(() => goals.filter((goal) => goal.status !== "close"), [goals]);
   const closedGoals = useMemo(() => goals.filter((goal) => goal.status === "close"), [goals]);
 
   const handleCreateGoal = async () => {
     const title = newGoalTitle.trim();
-    if (!title || !workspaceId || !listId || !userId || createGoal.isPending) return;
+    if (!title || !scopeId || !roleId || !userId || createGoal.isPending) return;
 
     await createGoal.mutateAsync({
-      workspaceId,
+      scopeId,
       uid: userId,
-      listId,
+      roleId,
       title,
     });
 
@@ -45,11 +45,11 @@ export function useGoalsSection(params: UseGoalsSectionParams) {
   };
 
   const handleToggleGoal = (goalId: string, status: GoalStatus) => {
-    if (!workspaceId || !listId) return;
+    if (!scopeId || !roleId) return;
 
     updateStatus.mutate({
-      workspaceId,
-      listId,
+      scopeId,
+      roleId,
       goalId,
       status,
     });
@@ -69,14 +69,14 @@ export function useGoalsSection(params: UseGoalsSectionParams) {
   };
 
   const saveEditGoal = async () => {
-    if (!workspaceId || !listId || !editingGoalId || updateGoal.isPending) return;
+    if (!scopeId || !roleId || !editingGoalId || updateGoal.isPending) return;
 
     const title = editingTitle.trim();
     if (!title) return;
 
     await updateGoal.mutateAsync({
-      workspaceId,
-      listId,
+      scopeId,
+      roleId,
       goalId: editingGoalId,
       title,
       description: editingDescription.trim(),
@@ -95,11 +95,11 @@ export function useGoalsSection(params: UseGoalsSectionParams) {
   const cancelDeleteGoal = () => setConfirmDeleteId(null);
 
   const confirmDeleteGoal = async (goalId: string) => {
-    if (!workspaceId || !listId || deleteGoal.isPending) return;
+    if (!scopeId || !roleId || deleteGoal.isPending) return;
 
     await deleteGoal.mutateAsync({
-      workspaceId,
-      listId,
+      scopeId,
+      roleId,
       goalId,
     });
 

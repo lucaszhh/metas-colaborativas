@@ -1,26 +1,26 @@
 import { db } from "@/lib/firebase";
 import { collectionGroup, doc, onSnapshot, query, where } from "firebase/firestore";
 
-export type WorkspaceSummary = {
+export type ScopeSummary = {
   id: string;
   name: string;
   ownerId?: string;
 };
 
-export function subscribeMyWorkspaces(params: {
+export function subscribeMyScopes(params: {
   uid: string;
-  onChange: (workspaces: WorkspaceSummary[]) => void;
+  onChange: (scopes: ScopeSummary[]) => void;
   onError?: (e: unknown) => void;
 }) {
   const { uid, onChange, onError } = params;
 
-  const workspacesById = new Map<string, WorkspaceSummary>();
-  const workspaceUnsubs = new Map<string, () => void>();
+  const scopesById = new Map<string, ScopeSummary>();
+  const scopeUnsubs = new Map<string, () => void>();
   let order: string[] = [];
 
   const emit = () => {
-    const list = order.map((id) => workspacesById.get(id)).filter(Boolean) as WorkspaceSummary[];
-    onChange(list);
+    const scopes = order.map((id) => scopesById.get(id)).filter(Boolean) as ScopeSummary[];
+    onChange(scopes);
   };
 
   const membersQuery = query(collectionGroup(db, "members"), where("uid", "==", uid));
@@ -30,33 +30,33 @@ export function subscribeMyWorkspaces(params: {
       const ids = snap.docs.map((d) => d.ref.parent.parent?.id).filter(Boolean) as string[];
       order = Array.from(new Set(ids));
 
-      for (const [id, unsub] of workspaceUnsubs) {
+      for (const [id, unsub] of scopeUnsubs) {
         if (!order.includes(id)) {
           unsub();
-          workspaceUnsubs.delete(id);
-          workspacesById.delete(id);
+          scopeUnsubs.delete(id);
+          scopesById.delete(id);
         }
       }
 
       for (const id of order) {
-        if (workspaceUnsubs.has(id)) continue;
+        if (scopeUnsubs.has(id)) continue;
 
-        if (!workspacesById.has(id)) {
-          workspacesById.set(id, { id, name: "Workspace sin nombre" });
+        if (!scopesById.has(id)) {
+          scopesById.set(id, { id, name: "Ambito sin nombre" });
         }
 
         const unsub = onSnapshot(
-          doc(db, "workspaces", id),
+          doc(db, "scopes", id),
           (docSnap) => {
             if (!docSnap.exists()) {
-              workspacesById.delete(id);
+              scopesById.delete(id);
               emit();
               return;
             }
             const data = docSnap.data() as { name?: string; ownerId?: string };
-            workspacesById.set(id, {
+            scopesById.set(id, {
               id: docSnap.id,
-              name: data.name ?? "Workspace sin nombre",
+              name: data.name ?? "Ambito sin nombre",
               ownerId: data.ownerId,
             });
             emit();
@@ -64,7 +64,7 @@ export function subscribeMyWorkspaces(params: {
           (err) => onError?.(err)
         );
 
-        workspaceUnsubs.set(id, unsub);
+        scopeUnsubs.set(id, unsub);
       }
 
       emit();
@@ -74,6 +74,6 @@ export function subscribeMyWorkspaces(params: {
 
   return () => {
     membersUnsub();
-    for (const unsub of workspaceUnsubs.values()) unsub();
+    for (const unsub of scopeUnsubs.values()) unsub();
   };
 }

@@ -1,30 +1,30 @@
 import { useEffect, useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { type GoalListDoc, subscribeGoalLists } from "@/services/goals";
+import { type RoleDoc, subscribeRoles } from "@/services/goals";
 
-export function useGoalLists(workspaceId: string | null) {
+export function useRoles(scopeId: string | null) {
   const queryClient = useQueryClient();
   const [ready, setReady] = useState(false);
   const [snapshotError, setSnapshotError] = useState<unknown>(null);
 
   const query = useQuery({
-    queryKey: ["goalLists", workspaceId],
-    queryFn: async () => [] as GoalListDoc[],
+    queryKey: ["roles", scopeId],
+    queryFn: async () => [] as RoleDoc[],
     enabled: false,
-    initialData: [] as GoalListDoc[],
+    initialData: [] as RoleDoc[],
   });
 
   useEffect(() => {
     setReady(false);
     setSnapshotError(null);
 
-    if (!workspaceId) return;
+    if (!scopeId) return;
 
-    const unsub = subscribeGoalLists({
-      workspaceId,
+    const unsub = subscribeRoles({
+      scopeId,
       onChange: (data) => {
         setSnapshotError(null);
-        queryClient.setQueryData(["goalLists", workspaceId], data);
+        queryClient.setQueryData(["roles", scopeId], data);
         setReady(true);
       },
       onError: (e) => {
@@ -34,11 +34,11 @@ export function useGoalLists(workspaceId: string | null) {
     });
 
     return () => unsub();
-  }, [workspaceId, queryClient]);
+  }, [scopeId, queryClient]);
 
   return {
-    lists: (query.data ?? []) as GoalListDoc[],
-    loading: !!workspaceId && !ready,
+    roles: (query.data ?? []) as RoleDoc[],
+    loading: !!scopeId && !ready,
     error: snapshotError ?? query.error,
   };
 }

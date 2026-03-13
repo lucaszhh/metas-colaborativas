@@ -9,13 +9,13 @@ export function useGoalMutations() {
   const createGoalItem = useMutation({
     mutationFn: createGoal,
     onSuccess: (id, variables) => {
-      const key = ["goals", variables.workspaceId, variables.listId];
+      const key = ["goals", variables.scopeId, variables.roleId];
       const prev = (queryClient.getQueryData(key) as GoalDoc[] | undefined) ?? [];
       if (!prev.some((g) => g.id === id)) {
         queryClient.setQueryData(key, [
           {
             id,
-            listId: variables.listId,
+            roleId: variables.roleId,
             title: variables.title,
             status: "open" as GoalStatus,
             createdBy: variables.uid,
@@ -38,17 +38,17 @@ export function useGoalMutations() {
 
   const updateStatus = useMutation({
     mutationFn: (variables: {
-      workspaceId: string;
-      listId: string;
+      scopeId: string;
+      roleId: string;
       goalId: string;
       status: GoalStatus;
     }) => updateGoalStatus({
-      workspaceId: variables.workspaceId,
+      scopeId: variables.scopeId,
       goalId: variables.goalId,
       status: variables.status,
     }),
     onMutate: async (variables) => {
-      const key = ["goals", variables.workspaceId, variables.listId];
+      const key = ["goals", variables.scopeId, variables.roleId];
       const prev = (queryClient.getQueryData(key) as GoalDoc[] | undefined) ?? [];
       queryClient.setQueryData(
         key,
@@ -68,20 +68,20 @@ export function useGoalMutations() {
 
   const updateGoalDetails = useMutation({
     mutationFn: (variables: {
-      workspaceId: string;
-      listId: string;
+      scopeId: string;
+      roleId: string;
       goalId: string;
       title: string;
       description: string;
     }) =>
       updateGoal({
-        workspaceId: variables.workspaceId,
+        scopeId: variables.scopeId,
         goalId: variables.goalId,
         title: variables.title,
         description: variables.description,
       }),
     onMutate: async (variables) => {
-      const key = ["goals", variables.workspaceId, variables.listId];
+      const key = ["goals", variables.scopeId, variables.roleId];
       const prev = (queryClient.getQueryData(key) as GoalDoc[] | undefined) ?? [];
       queryClient.setQueryData(
         key,
@@ -109,13 +109,13 @@ export function useGoalMutations() {
   });
 
   const deleteGoalItem = useMutation({
-    mutationFn: (variables: { workspaceId: string; listId: string; goalId: string }) =>
+    mutationFn: (variables: { scopeId: string; roleId: string; goalId: string }) =>
       deleteGoal({
-        workspaceId: variables.workspaceId,
+        scopeId: variables.scopeId,
         goalId: variables.goalId,
       }),
     onMutate: async (variables) => {
-      const key = ["goals", variables.workspaceId, variables.listId];
+      const key = ["goals", variables.scopeId, variables.roleId];
       const prev = (queryClient.getQueryData(key) as GoalDoc[] | undefined) ?? [];
       queryClient.setQueryData(
         key,
