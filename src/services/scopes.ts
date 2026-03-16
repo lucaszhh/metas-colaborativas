@@ -5,10 +5,13 @@ import {
   collection,
   doc,
   getDocs,
+  query,
   serverTimestamp,
   setDoc,
   updateDoc,
+  where,
 } from "firebase/firestore";
+import type { ScopeSummary } from "@/services/scopes.queries";
 
 export async function createScope(params: { uid: string; name: string }) {
   const { uid, name } = params;
@@ -27,6 +30,21 @@ export async function createScope(params: { uid: string; name: string }) {
   });
 
   return scopeRef.id;
+}
+
+export async function listOwnedScopes(uid: string): Promise<ScopeSummary[]> {
+  const ownedScopesQuery = query(collection(db, "scopes"), where("ownerId", "==", uid));
+  const snap = await getDocs(ownedScopesQuery);
+
+  return snap.docs.map((docSnap) => {
+    const data = docSnap.data() as { name?: string; ownerId?: string };
+
+    return {
+      id: docSnap.id,
+      name: data.name ?? "Ambito sin nombre",
+      ownerId: data.ownerId,
+    } satisfies ScopeSummary;
+  });
 }
 
 export async function updateScope(params: { scopeId: string; name: string }) {

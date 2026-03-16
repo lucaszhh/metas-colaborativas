@@ -9,9 +9,16 @@ export function useUserSettings(uid: string | null) {
 
   const query = useQuery({
     queryKey: ["userSettings", uid],
-    queryFn: async () => ({ activeScopeId: null } as UserSettings),
+    queryFn: async () =>
+      ({
+        activeScopeId: null,
+        defaultRolesSeedVersion: null,
+      }) as UserSettings,
     enabled: false,
-    initialData: { activeScopeId: null } as UserSettings,
+    initialData: {
+      activeScopeId: null,
+      defaultRolesSeedVersion: null,
+    } as UserSettings,
   });
 
   useEffect(() => {
@@ -36,7 +43,10 @@ export function useUserSettings(uid: string | null) {
   }, [uid, queryClient]);
 
   return {
-    settings: (query.data ?? { activeScopeId: null }) as UserSettings,
+    settings: (query.data ?? {
+      activeScopeId: null,
+      defaultRolesSeedVersion: null,
+    }) as UserSettings,
     loading: !!uid && !ready,
     error: error ?? query.error,
   };
